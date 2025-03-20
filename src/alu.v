@@ -6,15 +6,16 @@ module ALU(
     output zero // active when the result is zero 
 );
 
-    localparam OP_ADD  = 4'b0000; // Addition
-    localparam OP_SUB  = 4'b0001; // Subtraction
-    localparam OP_AND  = 4'b0010; // Bitwise AND
-    localparam OP_OR   = 4'b0011; // Bitwise OR
-    localparam OP_XOR  = 4'b0100; // Bitwise XOR
-    localparam OP_SLL  = 4'b0101; // Shift Left Logical
-    localparam OP_SRL  = 4'b0110; // Shift Right Logical
-    localparam OP_SLT  = 4'b0111; // Set Less Than (signed)
-    localparam OP_SLTU = 4'b1000; // Set Less Than Unsigned
+    // PPARAMENTROS ERRADOS
+    localparam OP_ADD  = 4'b0010; // SUM
+    localparam OP_SUB  = 4'b0110; // SUB
+    localparam OP_AND  = 4'b0000; // AND
+    localparam OP_OR   = 4'b0001; // OR
+    localparam OP_XOR  = 4'b1010; // XOR
+    localparam OP_SLL  = 4'b1000; // SHIFT_LEFT
+    localparam OP_SRL  = 4'b1001; // SHIFT_RIGHT
+    localparam OP_SLT  = 4'b0111; // SLT
+    localparam OP_SLTU = 4'b1111; // SLT_U
 
     assign zero = (result == 32'b0); // set zero if the result is zero
 
