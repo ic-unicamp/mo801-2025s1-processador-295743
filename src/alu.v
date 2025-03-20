@@ -1,9 +1,36 @@
 module ALU(
-    input wire [31:0] src_a,
-    input wire [31:0] src_b,
-    input wire [2:0] alu_op,
-    output wire [31:0] result
+    input [31:0] src_a,
+    input [31:0] src_b,
+    input [3:0] alu_op,
+    output reg [31:0] result,
+    output zero // active when the result is zero 
 );
 
+    localparam OP_ADD  = 4'b0000; // Addition
+    localparam OP_SUB  = 4'b0001; // Subtraction
+    localparam OP_AND  = 4'b0010; // Bitwise AND
+    localparam OP_OR   = 4'b0011; // Bitwise OR
+    localparam OP_XOR  = 4'b0100; // Bitwise XOR
+    localparam OP_SLL  = 4'b0101; // Shift Left Logical
+    localparam OP_SRL  = 4'b0110; // Shift Right Logical
+    localparam OP_SLT  = 4'b0111; // Set Less Than (signed)
+    localparam OP_SLTU = 4'b1000; // Set Less Than Unsigned
+
+    assign zero = (result == 32'b0); // set zero if the result is zero
+
+    always @(*) begin
+        case (alu_op)
+            OP_ADD:  result = src_a + src_b;               // Addition
+            OP_SUB:  result = src_a - src_b;               // Subtraction
+            OP_AND:  result = src_a & src_b;               // Bitwise AND
+            OP_OR:   result = src_a | src_b;               // Bitwise OR
+            OP_XOR:  result = src_a ^ src_b;               // Bitwise XOR
+            OP_SLL:  result = src_a << src_b[4:0];         // Logical shift left
+            OP_SRL:  result = src_a >> src_b[4:0];         // Logical shift right
+            OP_SLT:  result = ($signed(src_a) < $signed(src_b)) ? 32'b1 : 32'b0; // Signed comparison
+            OP_SLTU: result = (src_a < src_b) ? 32'b1 : 32'b0; // Unsigned comparison
+            default: result = 32'b0;                       // Default case
+        endcase
+    end
 
 endmodule
