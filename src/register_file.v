@@ -3,15 +3,15 @@ module RegisterFile(
     input clk,
     input reset,
 
-    input wire [4:0] read_reg1,     // endereço do reg da porta 1
-    input wire [4:0] read_reg2,     // endereco do reg da porta 2
-    input wire [4:0] write_reg,     // endereco do reg de escrita
+    input [4:0] read_reg1,     // endereço do reg da porta 1
+    input [4:0] read_reg2,     // endereco do reg da porta 2
+    input [4:0] write_reg,     // endereco do reg de escrita
 
-    input wire write_enable,        // habilita escrita 
+    input write_enable,        // habilita escrita 
     
-    input wire [31:0] write_data,   // dado a ser escrito
-    output wire [31:0] read_data1,  // dado lido da porta 1
-    output wire [31:0] read_data2   // dado lido da porta 2
+    input [31:0] write_data,   // dado a ser escrito
+    output [31:0] read_data1,  // dado lido da porta 1
+    output [31:0] read_data2   // dado lido da porta 2
 );
     integer i;
 
