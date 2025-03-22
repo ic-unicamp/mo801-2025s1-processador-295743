@@ -1,11 +1,12 @@
-module ALUTb();
+module ALU_tb;
     reg [31:0] src_a;
     reg [31:0] src_b;
     reg [3:0] alu_op;
+
     wire [31:0] result;
     wire zero;
 
-    ALU alu(
+    ALU uut (
         .src_a(src_a),
         .src_b(src_b),
         .alu_op(alu_op),
@@ -14,117 +15,78 @@ module ALUTb();
     );
 
     initial begin
-        $dumpfile("tb_alu.vcd");
-        $dumpvars(0, ALUTb);
+        // Test 1: ADD
+        src_a = 32'h00000005;
+        src_b = 32'h00000003;
+        alu_op = 4'b0000; // OP_ADD
+        #10;
+        if (result !== 32'h00000008) $error("Test 1 Failed: Expected 8, got %h", result);
 
-        alu_op = 4'b0010; // SUM
-        src_a = 32'h1;
-        src_b = 32'h1;
+        // Test 2: SUB
+        src_a = 32'h00000005;
+        src_b = 32'h00000003;
+        alu_op = 4'b0001; // OP_SUB
+        #10;
+        if (result !== 32'h00000002) $error("Test 2 Failed: Expected 2, got %h", result);
 
-        #1;
+        // Test 3: AND
+        src_a = 32'h0000000F;
+        src_b = 32'h0000000A;
+        alu_op = 4'b0010; // OP_AND
+        #10;
+        if (result !== 32'h0000000A) $error("Test 3 Failed: Expected A, got %h", result);
 
-        if(result == 32'h2) begin
-            $display("Addition is correct\n");
-        end else begin
-            $display("Addition is not correct\n");
-        end
+        // Test 4: OR
+        src_a = 32'h0000000F;
+        src_b = 32'h0000000A;
+        alu_op = 4'b0011; // OP_OR
+        #10;
+        if (result !== 32'h0000000F) $error("Test 4 Failed: Expected F, got %h", result);
 
-        alu_op = 4'b0110; // SUB
-        src_a = 32'h2;
-        src_b = 32'h1;
+        // Test 5: XOR
+        src_a = 32'h0000000F;
+        src_b = 32'h0000000A;
+        alu_op = 4'b0100; // OP_XOR
+        #10;
+        if (result !== 32'h00000005) $error("Test 5 Failed: Expected 5, got %h", result);
 
-        #1;
-        if(result == 32'h1) begin
-            $display("Subtraction is correct\n");
-        end else begin
-            $display("Subtraction is not correct\n");
-        end
-
-        #1;
-
-        alu_op = 4'b0000; // AND
-        src_a = 32'h00000000;
-        src_b = 32'hFFFFFFFF;
-
-        #1;
-        if(result == 32'h00000000) begin
-            $display("Bitwise AND is correct\n");
-        end else begin
-            $display("Bitwise AND is not correct\n");
-        end
-
-        #1;
-        alu_op = 4'b0001; // OR
-        src_a = 32'h00000000;
-        src_b = 32'hFFFFFFFF;
-
-        #1;
-        if(result == 32'hFFFFFFFF) begin
-            $display("Bitwise OR is correct\n");
-        end else begin
-            $display("Bitwise OR is not correct\n");
-        end
-
-        #1;
-        alu_op = 4'b1010; // XOR
-        src_a = 32'h00000000;
-        src_b = 32'hFFFFFFFF;
-
-        #1;
-        if(result == 32'hFFFFFFFF) begin
-            $display("Bitwise XOR is correct\n");
-        end else begin
-            $display("Bitwise XOR is not correct\n");
-        end
-
-        #1;
-        alu_op = 4'b1000; // SHIFT_LEFT
-        src_a = 32'h00000001;
-        src_b = 32'h1;
-
-        #1; 
-        if(result == 32'h00000002) begin
-            $display("Shift Left Logical is correct\n");
-        end else begin
-            $display("Shift Left Logical is not correct\n");
-        end
-
-        #1;
-        alu_op = 4'b1001; // SHIFT_RIGHT
-        src_a = 32'h00000002;
-        src_b = 32'h1;
-
-        #1;
-        if(result == 32'h00000001) begin
-            $display("Shift Right Logical is correct\n");
-        end else begin
-            $display("Shift Right Logical is not correct\n");
-        end
-
-        #1;
-        alu_op = 4'b0111; // SLT
+        // Test 6: SLL
         src_a = 32'h00000001;
         src_b = 32'h00000002;
+        alu_op = 4'b0101; // OP_SLL
+        #10;
+        if (result !== 32'h00000004) $error("Test 6 Failed: Expected 4, got %h", result);
 
-        #1;
-        if(result == 32'h00000001) begin
-            $display("Set Less Than (signed) is correct\n");
-        end else begin
-            $display("Set Less Than (signed) is not correct\n");
-        end
+        // Test 7: SRL
+        src_a = 32'h80000000;
+        src_b = 32'h00000001;
+        alu_op = 4'b0110; // OP_SRL
+        #10;
+        if (result !== 32'h40000000) $error("Test 7 Failed: Expected 40000000, got %h", result);
 
-        #1;
-        alu_op = 4'b1111; // SLT_U
+        // Test 8: SRA
+        src_a = 32'h80000000;
+        src_b = 32'h00000001;
+        alu_op = 4'b0111; // OP_SRA
+        #10;
+        if (result !== 32'hC0000000) $error("Test 8 Failed: Expected C0000000, got %h", result);
+
+        // Test 9: SLT (signed)
+        src_a = 32'hFFFFFFFE; // -2
+        src_b = 32'h00000001; // 1
+        alu_op = 4'b1000; // OP_SLT
+        #10;
+        if (result !== 32'h00000001) $error("Test 9 Failed: Expected 1, got %h", result);
+
+        // Test 10: SLTU (unsigned)
         src_a = 32'h00000001;
         src_b = 32'h00000002;
+        alu_op = 4'b1001; // OP_SLTU
+        #10;
+        if (result !== 32'h00000001) $error("Test 10 Failed: Expected 1, got %h", result);
 
-        #1;
-        if(result == 32'h00000001) begin
-            $display("Set Less Than Unsigned is correct\n");
-        end else begin
-            $display("Set Less Than Unsigned is not correct\n");
-        end
-        
+        // End of tests
+        $display("All tests completed.");
         $finish;
     end
 
