@@ -42,12 +42,13 @@ module ImmExtTb;
         $display("\n");
 
         // Test 5: J-type (JAL)
-        instruction = 32'h12345FEF; // JAL x31, 0x12345
-        instruction = 32'h12345FEF; // JAL x31, 0x12345
+        //instruction = 32'h12345FEF; // JAL x31, 0x12345
+        instruction = 32'h7F8A60EF; // jal x1, 0xA67F8
         imm_src = 3'b100;
         #10;
-        if (imm_ext !== 32'h0008D7C) $error("Test 5 Failed");
+        if (imm_ext !== 32'hA67F8) $error("Test 5 Failed");
         $display("\n");
+
         
         $display("All tests passed!");
         $finish;

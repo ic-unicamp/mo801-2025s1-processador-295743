@@ -24,7 +24,6 @@ module ImmExt (
             
             // J-type: JAL
             3'b100: 
-                //imm_ext = {{11{instruction[31]}},instruction[31],instruction[30:21],instruction[20],instruction[19:12],1'b0};
                 imm_ext = {{11{instruction[31]}}, instruction[31], instruction[19:12], instruction[20], instruction[30:21], 1'b0};  
 
             // Default: Zero (ou I-type)
