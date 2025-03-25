@@ -1,58 +1,57 @@
 module ALUDecoder(
-    input is_imm, 
-    input funct7_5, 
-    input [2:0] funct3,
-    input [1:0] alu_op, 
-    output reg [2:0] alu_control  
+    input is_imm,              
+    input [6:0] funct7,  
+    input [2:0] funct3,         
+    input [1:0] alu_op,        
+    output reg [3:0] alu_out  
 );
 
-    // Defina os códigos de controle da ALU (3 bits)
-    localparam [2:0] 
-        ALU_ADD  = 3'b000,  // ADD, ADDI, LW, SW
-        ALU_SUB  = 3'b001,  // SUB, branches
-        ALU_AND  = 3'b010,  // AND, ANDI
-        ALU_OR   = 3'b011,  // OR, ORI
-        ALU_XOR  = 3'b100,  // XOR, XORI
-        ALU_SLL  = 3'b101,  // SLL, SLLI
-        ALU_SRL  = 3'b110,  // SRL, SRLI
-        ALU_SRA  = 3'b111,  // SRA, SRAI
-        ALU_SLT  = 3'b010,  // SLT, SLTI (reutiliza código de AND)
-        ALU_SLTU = 3'b011;  // SLTU, SLTIU (reutiliza código de OR)
+    localparam [3:0] 
+        ADD  = 4'b0010,  // ADD, ADDI, LW, SW
+        SUB  = 4'b0110,  // SUB, branches
+        SLT  = 4'b0111,  // SLT, SLTI 
+        SLTU = 4'b1111,  // SLTU, SLTIU 
+        XOR  = 4'b1010,  // XOR, XORI
+        SLL  = 4'b1000,  // SLL, SLLI
+        SRL  = 4'b1001,  // SRL, SRLI
+        SRA  = 4'b0011,  // SRA, SRAI
+        OR   = 4'b0001,  // OR, ORI
+        AND  = 4'b0000,  // AND, ANDI
+        EQ   = 4'b1110,  // BEQ
+        GE   = 4'b1011,  // BGE
+        GEU  = 4'b1101;  // BGEU
 
     always @(*) begin
-        case (alu_op)
-            2'b00: alu_control = ALU_ADD; // ADD (para LW, SW, ADDI)
-            2'b01: alu_control = ALU_SUB; // SUB (para branches)
-            2'b10: begin // R-type instructions
-                case (funct3) 
-                    3'b000: alu_control = (!is_imm && funct7_5) ? ALU_SUB : ALU_ADD; // ADD/SUB
-                    3'b001: alu_control = ALU_SLL; // SLL
-                    3'b010: alu_control = ALU_SLT; // SLT
-                    3'b011: alu_control = ALU_SLTU; // SLTU
-                    3'b100: alu_control = ALU_XOR; // XOR
-                    3'b101: alu_control = (!is_imm && funct7_5) ? ALU_SRA : ALU_SRL; // SRL/SRA
-                    3'b110: alu_control = ALU_OR; // OR
-                    3'b111: alu_control = ALU_AND; // AND   
-                    default: alu_control = ALU_ADD; // Default (ADD)
-                endcase
-            end
 
-            2'b11: begin // I-type instructions
+        case (alu_op)
+            alu_out = ADD;
+            2'b00: alu_out = 4'b0010; 
+            2'b01: begin
                 case (funct3)
-                    3'b000: alu_control = ALU_ADD; // ADDI
-                    3'b001: alu_control = ALU_SLL; // SLLI
-                    3'b010: alu_control = ALU_SLT; // SLTI
-                    3'b011: alu_control = ALU_SLTU; // SLTIU
-                    3'b100: alu_control = ALU_XOR; // XORI
-                    3'b101: alu_control = (funct7_5) ? ALU_SRA : ALU_SRL; // SRLI/SRAI
-                    3'b110: alu_control = ALU_OR; // ORI
-                    3'b111: alu_control = ALU_AND; // ANDI
-                    default: alu_control = ALU_ADD; // Default (ADD)
+                    3'b000: alu_out = SUB; 
+                    3'b001: alu_out = EQ;
+                    3'b100: alu_out = GE;
+                    3'b110: alu_out = GEU;
+                    3'b101: alu_out = SLT;
+                    3'b111: alu_out = SLTU;
+                    default: alu_out = SUB; // Default (SUB)
                 endcase
             end
             
-            default: alu_control = ALU_ADD; // Default (ADD)
-        endcase 
+            2'b10: begin // R-type instructions
+                case (funct3)
+                    3'b000: alu_out = ((is_imm==1'b0) && (funct7[5] == 1'b1)) ? SUB : ADD;
+                    3'b001: alu_out = SLL; 
+                    3'b010: alu_out = SLT;
+                    3'b011: alu_out = SLTU; 
+                    3'b100: alu_out = XOR;
+                    3'b101: alu_out = (funct7[5] == 1'b1) ? SRA : SRL;
+                    3'b110: alu_out = OR;
+                    3'b111: alu_out = AND;
+                    default: alu_out = ADD; // Default (ADD)
+                endcase
+            end
+        endcase
     end
 
 endmodule
