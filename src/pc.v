@@ -1,16 +1,21 @@
 module PC(
     input clock,
+    input load, 
     input reset,
-    input pc_write, // ativo quando o PC deve ser atualizado
     input [31:0] next_pc, // próximo valor do PC
     output reg [31:0] current_pc // valor atual do PC
 );
 
-    always @(posedge clock or posedge reset) begin
+    initial begin
+        current_pc = 32'h00000000;
+    end
+
+
+    always @(posedge clock) begin
         if (reset) begin
             current_pc = 32'h00000000;
         end
-        else if (pc_write) begin
+        else if (load == 1'b1) begin
             current_pc = next_pc; // Atualiza o PC
         end
     end
