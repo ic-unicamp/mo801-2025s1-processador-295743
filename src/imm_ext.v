@@ -8,7 +8,6 @@ module ImmExt (
         SW_OP =  7'b0100011,
         JAL_OP = 7'b1101111,
         LUI_OP = 7'b0110111,
-        CSR_OP = 7'b1110011,
         JALR_OP = 7'b1100111,
         AUIPC_OP = 7'b0010111,
         BEQ_OP = 7'b1100011,
@@ -35,8 +34,7 @@ module ImmExt (
                 endcase
             JALR_OP: // I type instruction JALR
                 imm_ext = {{20{instruction[31]}}, instruction[31:20]};
-            CSR_OP: // I type instruction  CSR
-                imm_ext = {20'h00000, instruction[31:20]};
+            
             SW_OP: // sw instruction  (S type)
                 imm_ext = {{20{instruction[31]}}, instruction[31:25], instruction[11:7]};
             default: 
