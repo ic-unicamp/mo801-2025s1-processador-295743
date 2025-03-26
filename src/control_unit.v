@@ -15,8 +15,7 @@ module ControlUnit(
         mem_read,
         is_imm, 
         mem_write, 
-        pc_write_cond, // write to PC if branch is taken
-        csr_write_cond, // write to CSR if branch is taken
+        branch, // write to PC if branch is taken
         alu_input_sel, // select ALU input
         [1:0] lorD, 
         [1:0] alu_op,
@@ -44,8 +43,7 @@ module ControlUnit(
         STATE_AUIPC         = 6'b001100, // add upper immediate to PC
         STATE_LUI           = 6'b001101, // load upper immediate
         STATE_JALR_PC       = 6'b001110, // jump and link register to PC
-        STATE_EXECUTECSR    = 6'b001111; // execute CSR instruction
-
+  
     // instructions opcodes
     localparam 
         LW      = 7'b0000011,
@@ -71,8 +69,7 @@ module ControlUnit(
         mem_read = 1'b0;
         is_imm = 1'b0;
         mem_write = 1'b0; 
-        pc_write_cond = 1'b0;
-        csr_write_cond = 1'b0;
+        branch = 1'b0;
         alu_input_sel = 1'b0;
         lorD = 2'b00 
         alu_op = 2'b00;
@@ -108,7 +105,6 @@ module ControlUnit(
                     AUIPCI : next_state = STATE_AUIPC;
                     LUII : next_state = STATE_LUI;
                     JALRI : next_state = STATE_JALR;
-                    CSR : next_state = STATE_EXECUTECSR;
                     default: next_state = STATE_FETCH;
                 endcase
 
@@ -144,8 +140,7 @@ module ControlUnit(
                 next_state = STATE_ALUWB;
             STATE_LUI:
                 next_state = STATE_ALUWB;
-            STATE_EXECUTECSR:
-                next_state = STATE_FETCH;
+            
             default: next_state = STATE_FETCH;
         endcase
     end
@@ -164,7 +159,6 @@ module ControlUnit(
         alu_src_b = 2'b00;
         reg_write = 1'b0;
         is_imm = 1'b0;
-        csr_write_cond = 1'b0;
 
         case (state) 
             STATE_FETCH: begin
@@ -212,7 +206,7 @@ module ControlUnit(
             STATE_BEQ: begin
                 alu_src_a = 3'b001;
                 alu_op = 2'b01;
-                pc_write_cond = 1'b1;
+                branch = 1'b1;
                 pc_src = 1'b1;
             end
             STATE_JALR: begin
@@ -230,11 +224,7 @@ module ControlUnit(
                 alu_src_a = 3'b011;
                 alu_src_b = 3'b010;
             end
-            STATE_EXECUTECSR: begin
-                reg_write = 1'b1;
-                mem_to_reg = 3'b010;
-                csr_write_cond = 1'b1;
-            end
+            
         endcase
     end
 
