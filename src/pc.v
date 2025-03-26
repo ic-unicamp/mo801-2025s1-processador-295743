@@ -1,23 +1,14 @@
 module PC(
-    input clock,
-    input load, 
-    input reset,
-    input [31:0] next_pc, // próximo valor do PC
-    output reg [31:0] current_pc // valor atual do PC
+    input clock, reset,
+    input [31:0] pc_in, 
+    output reg [31:0] pc_out 
 );
 
-    initial begin
-        current_pc = 32'h00000000;
-    end
-
-
     always @(posedge clock) begin
-        if (reset) begin
-            current_pc = 32'h00000000;
-        end
-        else if (load == 1'b1) begin
-            current_pc = next_pc; // Atualiza o PC
-        end
+        if (reset) 
+            pc_out = 32'h00000000;
+        else 
+            pc_out = pc_in; 
     end
 
 
