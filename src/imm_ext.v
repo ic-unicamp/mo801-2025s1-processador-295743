@@ -4,24 +4,28 @@ module ImmExt (
 );
 
     localparam [6:0]
-        LW_OP = 7'b0000011,
-        SW_OP =  7'b0100011,
-        JAL_OP = 7'b1101111,
-        LUI_OP = 7'b0110111,
-        CSR_OP = 7'b1110011,
-        JALR_OP = 7'b1100111,
-        AUIPC_OP = 7'b0010111,
-        BEQ_OP = 7'b1100011,
-        IMM_OP = 7'b0010011;
+        LW_OP        = 7'b0000011;
+        SW_OP        = 7'b0100011;
+        JAL_OP       = 7'b1101111;
+        LUI_OP       = 7'b0110111;
+        CSR_OP       = 7'b1110011;
+        JALR_OP      = 7'b1100111;
+        AUIPC_OP     = 7'b0010111;
+        BRANCH_OP    = 7'b1100011;
+        IMM_OP       = 7'b0010011;
+
 
     always @(*) begin
         case (instruction[6:0])
-            BEQ_OP: // SB type
+            BRANCH_OP: // SB type
                 imm_ext = {{19{instruction[31]}}, instruction[31], instruction[7], instruction[30:25], instruction[11:8], 1'b0};
+                
             JAL_OP: // UJ type JAL
                 imm_ext = {{11{instruction[31]}}, instruction[31], instruction[19:12], instruction[20], instruction[30:21], 1'b0};
+            
             AUIPC_OP: // AUIPC U type
                 imm_ext = {instruction[31:12], 12'h000};
+                
             LUI_OP: // LUI U type
                 imm_ext = {instruction[31:12], 12'h000};
             LW_OP: // lw instruction 
