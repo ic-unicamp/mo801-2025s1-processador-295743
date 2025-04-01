@@ -24,9 +24,9 @@ wire
   save_write_value;
 
 wire 
-  [1:0] alu_op, lorD;
+  [1:0] alu_op, load_or_data;
 wire
-  [2:0] alu_src_a, alu_src_b, mem_to_reg, cu_memory_op;
+  [2:0] alu_src_a, alu_src_b, reg_src, cu_memory_op;
 wire
   [3:0] aluop_out, cu_aluop;
 wire
@@ -37,7 +37,7 @@ reg
   [31:0] reg_instruction, reg_memory, reg_aluout, reg_data1, reg_data2, pc_old;
 
 assign write_data = reg_data2;
-assign option = (lorD == 2'b00 | control_mem_op == 1'b1) ? cu_memory_op : reg_instruction[14:12];
+assign option = (load_or_data == 2'b00 | control_mem_op == 1'b1) ? cu_memory_op : reg_instruction[14:12];
 
 PC Pc(
   .clock(clock), 
@@ -48,14 +48,14 @@ PC Pc(
 );
 
 Mux MemAddrMux(
-  .option({1'b0, lorD}),
+  .option({1'b0, load_or_data}),
   .A(pc_out),
   .B(reg_aluout),
   .S(address)
 );
 
 Mux MemDataMux(
-  .option(mem_to_reg),
+  .option(reg_src),
   .A(reg_aluout),
   .B(reg_memory),
   .D({16'h0000, alu_out_register[15:0]}),
@@ -104,21 +104,22 @@ RegisterFile RegisterBank(
 ControlUnit ControlUnit( 
   .clock(clock),
   .reset(clock),
-  .mem_res,
+  .mem_res(mem_response),
   .funct3(reg_instruction[14:12]),
   .op(reg_instruction[6:0]),
-  .pc_write, 
+  .pc_write(pc_write), 
   .ir_write(IRWrite),
-  .pc_src, 
-  .reg_write, 
-  .mem_read,
-  .mem_write, 
-  .pc_upd, 
-  .adr_src,
+  .pc_src(pc_src), 
+  .reg_write(reg_write), 
+  .mem_read(mem_read),
+  .mem_write(mem_write), 
+  .pc_upd(pc_write_cond), 
+  .load_or_data(load_or_data),
   .alu_op(alu_op),
   .alu_src_a(alu_src_a),
   .alu_src_b(alu_src_b),
-  .reg_src
+  .reg_src(reg_src),
+  .cu_aluop(cu_aluop)
 );
 
 ALUDecoder AluDecoder(
