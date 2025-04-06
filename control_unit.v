@@ -1,8 +1,7 @@
 module ControlUnit(
-    input clock, reset,
+    input clk, resetn,
     input [2:0] funct3,
     input [6:0] op,
-    input funct7_5,
     
     output reg PCWrite,   
     output reg IRWrite,  
@@ -50,8 +49,8 @@ module ControlUnit(
 
     reg [3:0] state, next_state; 
 
-    always @(posedge clock or posedge reset) begin
-        if (reset) 
+    always @(posedge clk or posedge resetn) begin
+        if (resetn) 
             state = FETCH;
         else
             state = next_state;

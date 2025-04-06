@@ -19,6 +19,8 @@ module ALUDecoder(
         AND  = 4'b0000,  // AND, ANDI
         BLT  = 4'b1011,
         BLTU = 4'b1101,
+        SLT = 4'b0111,
+        SLTU = 4'b1111,
         EQ = 4'b1110;
 
 

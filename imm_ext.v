@@ -4,13 +4,13 @@ module ImmExt (
 );
 
     localparam [6:0]
-        LW_OP        = 7'b0000011;
-        SW_OP        = 7'b0100011;
-        JAL_OP       = 7'b1101111;
-        LUI_OP       = 7'b0110111;
-        JALR_OP      = 7'b1100111;
-        AUIPC_OP     = 7'b0010111;
-        BRANCH_OP    = 7'b1100011;
+        LW_OP        = 7'b0000011,
+        SW_OP        = 7'b0100011,
+        JAL_OP       = 7'b1101111,
+        LUI_OP       = 7'b0110111,
+        JALR_OP      = 7'b1100111,
+        AUIPC_OP     = 7'b0010111,
+        BRANCH_OP    = 7'b1100011,
         IMM_OP       = 7'b0010011;
 
 

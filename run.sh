@@ -10,10 +10,16 @@ fi
 
 cp test/teste$1.mem memory.mem
 ./tb > saida.out
-sed -i '' '1,/^\*\*\*.*$/d' saida.out
+# sed -i '' '1,/^\*\*\*.*$/d' saida.out
+sed -i '1,/^\*\*\*.*$/d' saida.out
 cp saida.out test/saida$1.out
 cp saida.vcd test/saida$1.vcd
 rm saida.out saida.vcd memory.mem
+
+if ! ./tb > saida.out; then
+    echo "Erro ao executar ./tb"
+    exit 1
+fi
 
 if diff test/saida$1.out test/saida$1.ok >/dev/null; then
     echo "OK"

@@ -1,14 +1,14 @@
 module Mux(
-    input [2:0] option,
-    input [31:0] A,
-    input [31:0] B,
-    input [31:0] C,
-    input [31:0] D,
-    input [31:0] E,
-    input [31:0] F,
-    input [31:0] G,
-    input [31:0] H,
-    output [31:0] A,
+    input wire [2:0] option,
+    input wire [31:0] A,
+    input wire [31:0] B,
+    input wire [31:0] C,
+    input wire [31:0] D,
+    input wire [31:0] E,
+    input wire [31:0] F,
+    input wire [31:0] G,
+    input wire [31:0] H,
+    output reg [31:0] S
 );
 
 always @(*) begin

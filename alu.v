@@ -40,7 +40,7 @@ module ALU(
             GE: result = (src_a>=src_b) ? 32'h1 : 32'h0;
             GEU: result = ($unsigned(src_a)>=$unsigned(src_b)) ? 32'h1 : 32'h0;
             default: 
-                result = OP_ADD;                       // Default case
+                result = ADD;                       // Default case
         endcase
     end
 
