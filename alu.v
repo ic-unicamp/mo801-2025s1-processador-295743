@@ -4,7 +4,17 @@ module ALU(
     input [3:0] alu_control, 
     output reg [31:0] result,
     output zero 
+    
 );
+    // digitaljs
+    // mostrar as coisas até quinta 
+    // simplificar os projetos do meio - codigo mais pronto ao inves de fazer 
+    // barramento - jeito q o processador comunicar, acelerar o codigo - colocar instruções novas 
+    // colocar intruções novas -> gerar programas com ela 
+    // projeto 2 -- o processador vai se comunicar com o "mundo" mas com um periferico mais simples
+    // 2 e 3 - mais simples e o 4 mais dificl
+    // 3 e 4 projeto - pula para o software 
+    // Definição dos códigos de operação da ALU
     localparam [3:0]
         AND  = 4'b0000,
         OR   = 4'b0001,
@@ -36,7 +46,7 @@ module ALU(
             SRA:  result = src_a >>> src_b[4:0];        // Shift Right Arithmetic
             NOR: result = ~(src_a | src_b);
             XOR: result = src_a ^ src_b;               // Bitwise XOR
-            EQ:  result = src_a == src_b;
+            EQ:  result = (src_a == src_b);
             GE: result = (src_a>=src_b) ? 32'h1 : 32'h0;
             GEU: result = ($unsigned(src_a)>=$unsigned(src_b)) ? 32'h1 : 32'h0;
             default: 

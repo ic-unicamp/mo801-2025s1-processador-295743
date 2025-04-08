@@ -3,6 +3,8 @@ module ImmExt (
     output reg [31:0] imm_ext
 );
 
+// trabalhar com [1:0] imm_src  se (00 I-Type) (01 == S-Type) (10 == B-Type) (11 == U-Type)
+
     localparam [6:0]
         LW_OP        = 7'b0000011,
         SW_OP        = 7'b0100011,

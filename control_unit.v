@@ -3,6 +3,7 @@ module ControlUnit(
     input [2:0] funct3,
     input [6:0] op,
     
+    // formatar os nomes das saidas para usar underline
     output reg PCWrite,   
     output reg IRWrite,  
     output reg PCSrc,  
@@ -36,16 +37,17 @@ module ControlUnit(
         LUI         = 4'b1101;
 
     // Instruções opcodes
+    // verificar os opcodes
     localparam [6:0]
         LW      = 7'b0000011,
         SW      = 7'b0100011,
-        RTYPE   = 7'b0110011,
+        RTYPE   = 7'b0110011, // 0110011 
         ITYPE   = 7'b0010011,
         JALI    = 7'b1101111,
         BRANCHI = 7'b1100011,
         JALRI   = 7'b1100111,
-        AUIPCI  = 7'b0010111,
-        LUII    = 7'b0110111;
+        AUIPCI  = 7'b0010111, // 0010111
+        LUII    = 7'b0110111; // 0110111
 
     reg [3:0] state, next_state; 
 
@@ -157,7 +159,11 @@ module ControlUnit(
                 PCWrite = 1'b1;
                 PCSrc = 1'b1;     
             end
-
+            
+            // tem como fazer um estado para cada tipo de branch (verificar depois)
+            // utilizar um subtrador 
+            // nao tem problema mas é bom reaproveitar o sub
+            // provurar o sintesizador do verilog para verificar os códigos yosi
             BRANCH: begin
                 ALUSrcA = 3'b001; 
                 ALUOp = 2'b01;     

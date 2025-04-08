@@ -11,10 +11,11 @@ module core( // modulo de um core
 // naoo coloca arquivo de gtkwake
 
 // sinais de controle
-wire ir_write, zero, reg_write, pc_load, pc_write_cond, pc_write, is_imm;
+wire ir_write, zero, reg_write, pc_load, pc_src, pc_write, is_imm;
 wire [1:0] alu_op, load_or_data, adr_src;
 wire [2:0] alu_src_a, alu_src_b, reg_src;
 wire [3:0] alu_control;
+
 
 // usar funct7 e funct3 para decodificar a instrução
 // nao pode ter dois always aribuindo ao mesmo sinal
@@ -32,9 +33,8 @@ assign data_out = b_reg;
 
 // pc mux
 // assign pc_in = (pc_out == 1'b1) ? alu_result: alu_out;
-assign pc_in = (pc_write_cond) ? alu_result : pc_out + 4;
-assign pc_load = pc_write | (pc_write_cond & zero);
-
+assign pc_in = (pc_out==1'b1) ? alu_result : alu_out;
+assign pc_load = pc_write | (pc_src & zero);
 
 PC Pc(
   .clk(clk), 
@@ -103,11 +103,11 @@ ControlUnit ControlUnit(
   .op(instr[6:0]),
   .PCWrite(pc_write),   
   .IRWrite(ir_write),  
-  .PCSrc(pc_write_cond),  
+  .PCSrc(pc_src),  
   .RegWrite(reg_write),  
   .Imm(is_imm), 
   .MemWrite(we),   
-  .Branch(pc_write_cond),
+  .Branch(pc_src),
   .AdrSrc(adr_src),   
   .ALUOp(alu_op),
   .ALUSrcA(alu_src_a),    
@@ -137,6 +137,8 @@ ALU Alu(
   .zero(zero)
 );
 
+// perguntar se faz diferença os valores de controle da alu por exemplo ser 00000 para add ao inves de and
+// teste criar a partir do teste10 porque os dele vai até 10
 // mover o pc para 0 e colocar o reg[0] = 0
 
 always @(posedge clk) begin
