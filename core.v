@@ -7,6 +7,8 @@ module core( // modulo de um core
   output wire we // write enable  
 );
 
+// nao tem problema utilizar wire ao invés de reg nos inpputs e outputs do core
+// naoo coloca arquivo de gtkwake
 
 // sinais de controle
 wire ir_write, zero, reg_write, pc_load, pc_write_cond, pc_write, is_imm;
@@ -14,24 +16,30 @@ wire [1:0] alu_op, load_or_data, adr_src;
 wire [2:0] alu_src_a, alu_src_b, reg_src;
 wire [3:0] alu_control;
 
+// usar funct7 e funct3 para decodificar a instrução
+// nao pode ter dois always aribuindo ao mesmo sinal
 
 // sinais de dados
 wire [31:0] pc_out, pc_in, reg_in, alu_out, immediate;
 wire [31:0] reg_data1, reg_data2;
 reg [31:0]  instr, mdr, alu_result, a_reg, b_reg, old_pc;
-
+// rs1 rs2 rd 
 
 // sinais da alu
 wire [31:0] alu_in_a, alu_in_b;
 
 assign data_out = b_reg;
-assign pc_in = (pc_write_cond & zero) ? alu_result : alu_out;
+
+// pc mux
+// assign pc_in = (pc_out == 1'b1) ? alu_result: alu_out;
+assign pc_in = (pc_write_cond) ? alu_result : pc_out + 4;
 assign pc_load = pc_write | (pc_write_cond & zero);
+
 
 PC Pc(
   .clk(clk), 
   .resetn(resetn), 
-  .pc_write(pc_load),
+  .pc_load(pc_load),
   .pc_in(pc_in), 
   .pc_out(pc_out) 
 );
@@ -129,8 +137,10 @@ ALU Alu(
   .zero(zero)
 );
 
+// mover o pc para 0 e colocar o reg[0] = 0
 
 always @(posedge clk) begin
+  // $display("PC: 0x%h, instr: 0x%h, ir_write: %b", pc_out, instr, ir_write);
   if (resetn == 1'b0) begin
     instr = 32'h00000000;
     mdr = 32'h00000000;

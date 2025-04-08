@@ -49,8 +49,9 @@ module ControlUnit(
 
     reg [3:0] state, next_state; 
 
-    always @(posedge clk or posedge resetn) begin
-        if (resetn) 
+    always @(posedge clk) begin
+        // $display("Time=%0t State=b Opcode=%b PCWrite=%b PCSrc=%b", $time,  state, op,  PCWrite, PCSrc);
+        if (resetn == 1'b0) 
             state = FETCH;
         else
             state = next_state;

@@ -21,6 +21,7 @@ initial begin
     mem[i] = 32'h00000000;
   end
   $readmemh("memory.mem", mem);
+  
 end
 
 endmodule

@@ -1,14 +1,15 @@
 module PC(
-    input clk, resetn, pc_write,
+    input clk, resetn, pc_load,
     input [31:0] pc_in, 
     output reg [31:0] pc_out 
 );
 
-    always @(posedge clk) begin
-    if (resetn) 
+    always @(posedge clk or negedge resetn) begin
+    if (resetn == 1'b0) 
         pc_out = 32'h00000000;
-    else if (pc_write) // Só atualiza se pc_write estiver ativo
-        pc_out = pc_in; 
+    else if (pc_load)
+        pc_out = pc_in;
+        // $display("PC atualizado: %h", pc_in); 
     end
 
 
