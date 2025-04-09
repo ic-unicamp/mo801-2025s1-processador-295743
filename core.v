@@ -79,7 +79,7 @@ Mux AluBMux(
   .S(alu_in_b)
 );
 
-assign pc_in = (pc_out != 32'b0) ? alu_result : alu_out;
+assign pc_in = (pc_out == 32'b1) ? alu_result : alu_out;
 assign pc_load = (zero & pc_src) | pc_write;
 
 
