@@ -52,7 +52,7 @@ module ControlUnit(
     reg [3:0] state, next_state; 
 
     always @(posedge clk) begin
-        // $display("Time=%0t State=b Opcode=%b PCWrite=%b PCSrc=%b", $time,  state, op,  PCWrite, PCSrc);
+        // $display("Time=%0t State=%b Opcode=%b PCWrite=%b PCSrc=%b", $time,  state, op,  PCWrite, PCSrc);
         if (resetn == 1'b0) 
             state = FETCH;
         else
@@ -160,10 +160,6 @@ module ControlUnit(
                 PCSrc = 1'b1;     
             end
             
-            // tem como fazer um estado para cada tipo de branch (verificar depois)
-            // utilizar um subtrador 
-            // nao tem problema mas é bom reaproveitar o sub
-            // provurar o sintesizador do verilog para verificar os códigos yosi
             BRANCH: begin
                 ALUSrcA = 3'b001; 
                 ALUOp = 2'b01;     

@@ -25,11 +25,6 @@ reg [31:0]  ir, mdr, alu_result, a_reg, b_reg, old_pc;
 
 assign data_out = b_reg;
 
-// assign pc_in = (branch_signal & zero) ? alu_result : (pc_out + 4);
-
-// // PC só é atualizado se o sinal de escrita for ativado
-// assign pc_load = pc_write;
-
 PC Pc(
   .clk(clk), 
   .resetn(resetn), 
@@ -84,9 +79,10 @@ Mux AluBMux(
   .S(alu_in_b)
 );
 
-// assign pc_in = (pc_out == 1'b1) ? alu_result : alu_out;
-assign pc_in = (pc_src & zero) ? alu_result : (pc_out + 4);
+assign pc_in = (pc_out != 32'b0) ? alu_result : alu_out;
 assign pc_load = (zero & pc_src) | pc_write;
+
+
 
 RegisterFile RegisterBank(
   .clk(clk),
@@ -141,12 +137,9 @@ ALU Alu(
   .zero(zero)
 );
 
-// perguntar se faz diferença os valores de controle da alu por exemplo ser 00000 para add ao inves de and
-// teste criar a partir do teste10 porque os dele vai até 10
-// mover o pc para 0 e colocar o reg[0] = 0
 
 always @(posedge clk) begin
-  $display("PC out: 0x%h, old pc: 0x%h, ir: 0x%h, ir_write: %b", pc_out, old_pc, ir, ir_write);
+  // $display("Time=%0t PC out: 0x%h, old pc: 0x%h, ir: 0x%h, ir_write: %b", $time, pc_out, old_pc, ir, ir_write);
   if (resetn == 1'b0) begin
     ir = 32'h00000000;
     mdr = 32'h00000000;
