@@ -9,7 +9,7 @@ module PC(
         pc_out = 32'h00000000;
     else if (pc_load)
         pc_out = pc_in;
-        // $display("PC atualizado: %h", pc_in); 
+        // $display("pc out: %h <- pc in: %h", pc_out, pc_in);
     end
 
 

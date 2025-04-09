@@ -7,34 +7,28 @@ module core( // modulo de um core
   output wire we // write enable  
 );
 
-// nao tem problema utilizar wire ao invés de reg nos inpputs e outputs do core
-// naoo coloca arquivo de gtkwake
-
 // sinais de controle
-wire ir_write, zero, reg_write, pc_load, pc_src, pc_write, is_imm;
-wire [1:0] alu_op, load_or_data, adr_src;
+wire ir_write, zero, reg_write, pc_load, pc_src, pc_write, is_imm, branch_signal;
+wire [1:0] alu_op, adr_src;
 wire [2:0] alu_src_a, alu_src_b, reg_src;
 wire [3:0] alu_control;
 
 
-// usar funct7 e funct3 para decodificar a instrução
-// nao pode ter dois always aribuindo ao mesmo sinal
-
 // sinais de dados
-wire [31:0] pc_out, pc_in, reg_in, alu_out, immediate;
-wire [31:0] reg_data1, reg_data2;
-reg [31:0]  instr, mdr, alu_result, a_reg, b_reg, old_pc;
+wire [31:0] pc_out, pc_in, reg_in, alu_in_a, alu_in_b, alu_out, immediate;
+wire [31:0] reg_data1, reg_data2, rd;
+reg [31:0]  ir, mdr, alu_result, a_reg, b_reg, old_pc;
 // rs1 rs2 rd 
 
-// sinais da alu
-wire [31:0] alu_in_a, alu_in_b;
+// // sinais da alu
+// wire [31:0] alu_in_a, alu_in_b;
 
 assign data_out = b_reg;
 
-// pc mux
-// assign pc_in = (pc_out == 1'b1) ? alu_result: alu_out;
-assign pc_in = (pc_out==1'b1) ? alu_result : alu_out;
-assign pc_load = pc_write | (pc_src & zero);
+// assign pc_in = (branch_signal & zero) ? alu_result : (pc_out + 4);
+
+// // PC só é atualizado se o sinal de escrita for ativado
+// assign pc_load = pc_write;
 
 PC Pc(
   .clk(clk), 
@@ -55,10 +49,12 @@ Mux MemDataMux(
   .option(reg_src),
   .A(alu_result),
   .B(mdr),
-  .D({16'h0000, instr[15:0]}),
-  .E({24'h000000, instr[7:0]}),
-  .F({{16{instr[15]}}, instr[15:0]}),
-  .G({{24{instr[7]}}, instr[7:0]}),
+  .C(0),
+  .D({16'h0000, alu_result[15:0]}),
+  .E({24'h000000, alu_result[7:0]}),
+  .F({{16{alu_result[15]}}, alu_result[15:0]}),
+  .G({{24{alu_result[7]}}, alu_result[7:0]}),
+  .H(0),
   .S(reg_in)
 );
 
@@ -75,21 +71,29 @@ Mux AluAMux(
 );
 
 // mux para entrada b da alu
-Mux AluInputBMux(
+Mux AluBMux(
   .option(alu_src_b),
   .A(b_reg),
   .B(32'd4),
   .C(immediate),
+  .D(0),
+  .E(0),
+  .F(0),
+  .G(0),
+  .H(0),
   .S(alu_in_b)
 );
 
+// assign pc_in = (pc_out == 1'b1) ? alu_result : alu_out;
+assign pc_in = (pc_src & zero) ? alu_result : (pc_out + 4);
+assign pc_load = (zero & pc_src) | pc_write;
 
 RegisterFile RegisterBank(
   .clk(clk),
   .resetn(resetn),
-  .read_reg1(instr[19:15]),
-  .read_reg2(instr[24:20]),
-  .write_reg(instr[11:7]),
+  .read_reg1(ir[19:15]),
+  .read_reg2(ir[24:20]),
+  .write_reg(ir[11:7]),
   .write_enable(reg_write),
   .write_data(reg_in),
   .data_out1(reg_data1),
@@ -99,15 +103,15 @@ RegisterFile RegisterBank(
 ControlUnit ControlUnit(
   .clk(clk), 
   .resetn(resetn),
-  .funct3(instr[14:12]),
-  .op(instr[6:0]),
+  .funct3(ir[14:12]),
+  .op(ir[6:0]),
   .PCWrite(pc_write),   
   .IRWrite(ir_write),  
   .PCSrc(pc_src),  
   .RegWrite(reg_write),  
   .Imm(is_imm), 
   .MemWrite(we),   
-  .Branch(pc_src),
+  .Branch(branch_signal),
   .AdrSrc(adr_src),   
   .ALUOp(alu_op),
   .ALUSrcA(alu_src_a),    
@@ -116,7 +120,7 @@ ControlUnit ControlUnit(
 );
 
 ImmExt ImmExt (
-  .instruction(instr),
+  .instruction(ir),
   .imm_ext(immediate)
 );
 
@@ -124,8 +128,8 @@ ImmExt ImmExt (
 ALUDecoder AluDecoder(
   .is_imm(is_imm),   
   .alu_op(alu_op),        
-  .funct7(instr[31:25]),  
-  .funct3(instr[14:12]),         
+  .funct7(ir[31:25]),  
+  .funct3(ir[14:12]),         
   .alu_out(alu_control)
 );
 
@@ -142,9 +146,9 @@ ALU Alu(
 // mover o pc para 0 e colocar o reg[0] = 0
 
 always @(posedge clk) begin
-  // $display("PC: 0x%h, instr: 0x%h, ir_write: %b", pc_out, instr, ir_write);
+  $display("PC out: 0x%h, old pc: 0x%h, ir: 0x%h, ir_write: %b", pc_out, old_pc, ir, ir_write);
   if (resetn == 1'b0) begin
-    instr = 32'h00000000;
+    ir = 32'h00000000;
     mdr = 32'h00000000;
     alu_result = 32'h00000000;
     a_reg = 32'h00000000;
@@ -152,7 +156,7 @@ always @(posedge clk) begin
     old_pc = 32'h00000000;
   end else begin
     if (ir_write) begin
-      instr = data_in;
+      ir = data_in;
       old_pc = pc_out;
     end
     mdr = data_in;
