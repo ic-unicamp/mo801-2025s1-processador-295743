@@ -4,7 +4,8 @@ module core( // modulo de um core
   output wire [31:0] address, // endereço de saída
   output wire [31:0] data_out, // dado de saída
   input [31:0] data_in, // dado de entrada
-  output wire we // write enable  
+  output wire we, // write enable  
+  output ebreak_flag // sinal de ebreak
 );
 
 // sinais de controle
@@ -12,6 +13,7 @@ wire ir_write, zero, reg_write, pc_load, pc_src, pc_write, is_imm, branch_signal
 wire [1:0] alu_op, adr_src;
 wire [2:0] alu_src_a, alu_src_b, reg_src;
 wire [3:0] alu_control;
+wire ebreak_flag_internal;
 
 
 // sinais de dados
@@ -82,7 +84,7 @@ Mux AluBMux(
 assign pc_in = (pc_out == 32'b1) ? alu_result : alu_out;
 assign pc_load = (zero & pc_src) | pc_write;
 
-
+assign ebreak_flag = ebreak_flag_internal;
 
 RegisterFile RegisterBank(
   .clk(clk),
@@ -112,7 +114,8 @@ ControlUnit ControlUnit(
   .ALUOp(alu_op),
   .ALUSrcA(alu_src_a),    
   .ALUSrcB(alu_src_b),  
-  .ResultSrc(reg_src)
+  .ResultSrc(reg_src),
+  .EBreak(ebreak_flag_internal)
 );
 
 ImmExt ImmExt (

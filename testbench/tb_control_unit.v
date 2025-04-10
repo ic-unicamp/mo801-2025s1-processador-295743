@@ -1,11 +1,10 @@
 `timescale 1ns / 1ps
 
 module ControlUnit_tb;
-    reg clock;
-    reg reset;
+    reg clk;
+    reg resetn;
     reg [2:0] funct3;
     reg [6:0] op;
-    reg funct7_5;
     
     wire PCWrite;     // atualiza o PC (após fetch ou salto)
     wire IRWrite;     // habilita escrita no registrador de instrução
@@ -21,11 +20,10 @@ module ControlUnit_tb;
     wire [2:0] ResultSrc; // Seleciona fonte do resultado
 
     ControlUnit uut (
-        .clock(clock),
-        .reset(reset),
+        .clk(clk),
+        .resetn(resetn),
         .funct3(funct3),
         .op(op),
-        .funct7_5(funct7_5),
         .PCWrite(PCWrite),
         .IRWrite(IRWrite),
         .PCSrc(PCSrc),
@@ -40,22 +38,20 @@ module ControlUnit_tb;
         .ResultSrc(ResultSrc)
     );
 
-    always begin
-        #5 clock = ~clock;
-    end
+    // clk generator
+    always #1 clk = (clk===1'b0);
 
     // Test procedure
     initial begin
         // Initialize Inputs
-        clock = 0;
-        reset = 1;
+        clk = 0;
+        resetn = 0;
         funct3 = 0;
         op = 0;
-        funct7_5 = 0;
         
-        // Wait for global reset
+        // Wait for global resetn
         #10;
-        reset = 0;
+        resetn = 1;
         
         // Monitor changes
         $monitor("Time=%0t State=%b Op=%b PCWrite=%b RegWrite=%b MemWrite=%b",
@@ -106,8 +102,8 @@ module ControlUnit_tb;
     end
 
     // Additional checks
-    always @(posedge clock) begin
-        if (reset) begin
+    always @(posedge clk) begin
+        if (resetn==1'b0) begin
             #1;
             if (uut.state !== uut.FETCH) begin
                 $display("Error: Reset failed to set state to FETCH");
