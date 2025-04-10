@@ -2,8 +2,7 @@ module ControlUnit(
     input clk, resetn,
     input [2:0] funct3,
     input [6:0] op,
-    
-    // formatar os nomes das saidas para usar underline
+   
     output reg PCWrite,   
     output reg IRWrite,  
     output reg PCSrc,  
@@ -119,8 +118,8 @@ module ControlUnit(
                 ALUSrcB = 3'b001;
             end
 
-            DECODE: begin
-                ALUSrcA = 3'b010; 
+            DECODE: begin 
+                ALUSrcA = 3'b010;  
                 ALUSrcB = 3'b010; 
             end
 
