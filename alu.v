@@ -23,11 +23,11 @@ module ALU(
         SLT  = 4'b0111,
         NOR  = 4'b1100,
         XOR  = 4'b1010,
-        EQ   = 4'b1110,
+        BEQ   = 4'b1110,
         SLL  = 4'b1000,
         SRL  = 4'b1001,
         SRA  = 4'b0011,
-        GE   = 4'b1011,
+        BGE   = 4'b1011,
         GEU  = 4'b1101,
         SLTU = 4'b1111;
 
@@ -39,18 +39,23 @@ module ALU(
             OR:  result = src_a | src_b;               // Bitwise OR
             ADD:  result = src_a + src_b;               // Addition
             SUB:  result = src_a - src_b;               // Subtraction
-            SLT:  result = ($signed(src_a) < $signed(src_b)) ? 1 : 0; // SLT
-            SLTU:  result = (src_a < src_b) ? 1 : 0;     // SLTU
+            
+            SLT:  result = ($signed(src_a) < $signed(src_b)) ? 32'h1 : 32'h0; // SLT
+            SLTU:  result = ($unsigned(src_a) < $unsigned(src_b)) ? 32'h1 : 32'h0;     // SLTU
+            
             SLL:  result = src_a << src_b[4:0];         // Logical shift left
-            SRL:  result = src_a >> src_b[4:0];         // Logical shift right
+            SRL:  result = src_a >> $unsigned(src_b[4:0]);         // Logical shift right
             SRA:  result = src_a >>> src_b[4:0];        // Shift Right Arithmetic
+            
             NOR: result = ~(src_a | src_b);
             XOR: result = src_a ^ src_b;               // Bitwise XOR
-            EQ:  result = (src_a == src_b);
-            GE: result = (src_a>=src_b) ? 32'h1 : 32'h0;
-            GEU: result = ($unsigned(src_a)>=$unsigned(src_b)) ? 32'h1 : 32'h0;
+
+            BEQ:  result = (src_a == src_b) ? 32'h1 : 32'h0; // Equal
+            BGE: result = (src_a>=src_b) ? 32'h1 : 32'h0; // Greater or Equal
+            GEU: result = ($unsigned(src_a)>=$unsigned(src_b)) ? 32'h1 : 32'h0; // Greater or Equal Unsigned
+            
             default: 
-                result = ADD;                       // Default case
+                result = 32'h0;                       // Default case
         endcase
     end
 
