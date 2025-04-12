@@ -3,7 +3,6 @@ module tb();
 reg clk, resetn;
 wire we;
 wire [31:0] address, data_out, data_in;
-wire ebreak_flag;
 
 core dut(
   .clk(clk),
@@ -11,8 +10,7 @@ core dut(
   .address(address),
   .data_out(data_out),
   .data_in(data_in),
-  .we(we),
-  .ebreak_flag(ebreak_flag) 
+  .we(we)
 );
 
 memory m(
@@ -38,7 +36,7 @@ end
 
 // Verifica se o endereço atingiu 4092 (0xFFC) e encerra a simulação
 always @(posedge clk) begin
-  if (address == 'hFFC || ebreak_flag) begin
+  if (address == 'hFFC ) begin
     $display("Address reached 4092 (0xFFC). Stopping simulation.");
     $finish;
   end

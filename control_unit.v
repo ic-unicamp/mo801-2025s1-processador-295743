@@ -16,9 +16,8 @@ module ControlUnit(
 
     output reg [2:0] ALUSrcA,    // operando ALU A
     output reg [2:0] ALUSrcB,   // operando da ALU
-    output reg [2:0] ResultSrc,
+    output reg [2:0] ResultSrc
 
-    output reg EBreak
 );
     // Estados da máquina de estados
     localparam [3:0]
@@ -35,8 +34,7 @@ module ControlUnit(
         BRANCH      = 4'b1010, 
         JALR        = 4'b1011, 
         AUIPC       = 4'b1100, 
-        LUI         = 4'b1101,
-        EBREAK      = 4'b1110; 
+        LUI         = 4'b1101;
 
     // Instruções opcodes
     // verificar os opcodes
@@ -66,7 +64,6 @@ module ControlUnit(
         case (state)
             FETCH: next_state = DECODE;
             DECODE: begin
-                if (op == OP_EBREAK && funct3 == 3'b00) next_state = EBREAK;
                 case (op)
                     LW: next_state = MEMADR;
                     SW: next_state = MEMADR;
@@ -109,7 +106,6 @@ module ControlUnit(
         ResultSrc = 3'b000;
         ALUSrcA = 3'b000;
         ALUSrcB = 3'b000;
-        EBreak = 1'b0;
 
         case (state) 
             FETCH: begin
@@ -188,9 +184,6 @@ module ControlUnit(
             LUI: begin
                 ALUSrcA = 3'b011; 
                 ALUSrcB = 3'b010; 
-            end
-            EBREAK: begin
-                EBreak = 1'b1;
             end
         endcase
     end

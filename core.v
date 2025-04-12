@@ -4,8 +4,7 @@ module core( // modulo de um core
   output wire [31:0] address, // endereço de saída
   output wire [31:0] data_out, // dado de saída
   input [31:0] data_in, // dado de entrada
-  output wire we, // write enable  
-  output ebreak_flag // sinal de ebreak
+  output wire we // write enable  
 );
 
 // sinais de controle
@@ -114,8 +113,7 @@ ControlUnit ControlUnit(
   .ALUOp(alu_op),
   .ALUSrcA(alu_src_a),    
   .ALUSrcB(alu_src_b),  
-  .ResultSrc(reg_src),
-  .EBreak(ebreak_flag_internal)
+  .ResultSrc(reg_src)
 );
 
 ImmExt ImmExt (
