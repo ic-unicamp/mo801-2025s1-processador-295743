@@ -13,9 +13,6 @@ wire [1:0] alu_op, adr_src;
 wire [2:0] alu_src_a, alu_src_b, reg_src;
 wire [3:0] alu_control;
 
-wire [31:0] pc_plus_4;
-assign pc_plus_4 = old_pc + 4;
-
 // sinais de dados
 wire [31:0] current_pc, next_pc_value, reg_in, alu_in_a, alu_in_b, alu_out, immediate;
 wire [31:0] reg_data1, reg_data2, rd;
@@ -42,29 +39,16 @@ Mux MemAddrMux(
   .S(address)
 );
 
-// Mux MemDataMux(
-//   .option(reg_src),
-//   .A(alu_result),
-//   .B(mdr),
-//   .C(0),
-//   .D({16'h0000, alu_result[15:0]}),
-//   .E({24'h000000, alu_result[7:0]}),
-//   .F({{16{alu_result[15]}}, alu_result[15:0]}),
-//   .G({{24{alu_result[7]}}, alu_result[7:0]}),
-//   .H(0),
-//   .S(reg_in)
-// );
-
 Mux MemDataMux(
   .option(reg_src),
-  .A(alu_result),                         // 000
-  .B(mdr),                                // 001
-  .C(pc_plus_4),                          // 010 ← aqui está o PC + 4
-  .D({16'h0000, alu_result[15:0]}),       // 011
-  .E({24'h000000, alu_result[7:0]}),      // 100
-  .F({{16{alu_result[15]}}, alu_result[15:0]}), // 101
-  .G({{24{alu_result[7]}}, alu_result[7:0]}),   // 110
-  .H(0),                                  // 111
+  .A(alu_result),
+  .B(mdr),
+  .C(0),
+  .D({16'h0000, alu_result[15:0]}),
+  .E({24'h000000, alu_result[7:0]}),
+  .F({{16{alu_result[15]}}, alu_result[15:0]}),
+  .G({{24{alu_result[7]}}, alu_result[7:0]}),
+  .H(0),
   .S(reg_in)
 );
 
@@ -87,17 +71,12 @@ Mux AluBMux(
   .A(b_reg),
   .B(32'd4),
   .C(immediate),
-  .D(0),
-  .E(0),
-  .F(0),
-  .G(0),
-  .H(0),
   .S(alu_in_b)
 );
 
-// assign next_pc_value = (current_pc == 32'b1) ? alu_result : alu_out;
+assign next_pc_value = (current_pc == 1'b1) ? alu_result : alu_out;
 
-assign next_pc_value = pc_src ? alu_result : alu_out;
+// assign next_pc_value = pc_src ? alu_result : alu_out;
 assign enable_pc_update = (zero & pc_src) | pc_write;
 
 //JAL --> PC = ALUOut; ALUOut = PC+4
@@ -157,9 +136,6 @@ ALU Alu(
 
 
 always @(posedge clk) begin
-  // $display("Time=%0t PC out: 0x%h, old pc: 0x%h, ir: 0x%h, ir_write: %b", $time, current_pc, old_pc, ir, ir_write);
-  $display("=== Time=%0t PC: 0x%h, old_pc: 0x%h, immediate: 0x%h, alu_result (PC+imm): 0x%h IR:: 0x%h", 
-         $time, current_pc, old_pc, immediate, alu_out, ir);
   if (resetn == 1'b0) begin
     ir = 32'h00000000;
     mdr = 32'h00000000;
@@ -169,8 +145,8 @@ always @(posedge clk) begin
     old_pc = 32'h00000000;
   end else begin
     if (ir_write) begin
+      old_pc = current_pc; // captura o valor correto do PC no ciclo de busca
       ir = data_in;
-      old_pc = current_pc;
     end
     mdr = data_in;
     a_reg = reg_data1;
@@ -178,5 +154,6 @@ always @(posedge clk) begin
     alu_result = alu_out;
   end
 end
+
 
 endmodule

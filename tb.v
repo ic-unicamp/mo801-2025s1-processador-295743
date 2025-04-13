@@ -30,6 +30,9 @@ initial begin
   $dumpvars(0, tb);
   resetn = 1'b0;
   #11 resetn = 1'b1;
+  // $monitor("=== Time=%0t: address=%h pc:%h ir:%h imm:%h alu result:%h", $time, dut.address, dut.current_pc, dut.ir, dut.immediate, dut.alu_result);
+  // $monitor("=== Time=%0t: address=%h pc:%h  old_pc:%h ir:%h ", $time, dut.address, dut.current_pc, dut.old_pc, dut.ir);
+  
   $display("*** Starting simulation. ***");
   #4000 $finish;
 end

@@ -36,7 +36,7 @@ module ALU(
             
             SLL:  result = src_a << src_b[4:0];         // Logical shift left
             SRL:  result = src_a >> $unsigned(src_b[4:0]);         // Logical shift right
-            SRA:  result = src_a >>> src_b[4:0];        // Shift Right Arithmetic
+            SRA:  result = src_a >>> $signed(src_b[4:0]);        // Shift Right Arithmetic
             
             NOR: result = ~(src_a | src_b);
             XOR: result = src_a ^ src_b;               // Bitwise XOR

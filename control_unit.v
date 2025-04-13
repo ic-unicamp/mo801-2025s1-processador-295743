@@ -34,7 +34,8 @@ module ControlUnit(
         BRANCH      = 4'b1010, 
         JALR        = 4'b1011, 
         AUIPC       = 4'b1100, 
-        LUI         = 4'b1101;
+        LUI         = 4'b1101,
+        EXCEPTION   = 4'b1110; 
 
     // Instruções opcodes
     // verificar os opcodes
@@ -64,18 +65,22 @@ module ControlUnit(
         case (state)
             FETCH: next_state = DECODE;
             DECODE: begin
-                case (op)
-                    LW: next_state = MEMADR;
-                    SW: next_state = MEMADR;
-                    RTYPE: next_state = EXECUTER;
-                    ITYPE: next_state = EXECUTEI;
-                    JAL_OP: next_state = JAL;
-                    BRANCHI: next_state = BRANCH;
-                    AUIPCI: next_state = AUIPC;
-                    LUII: next_state = LUI;
-                    JALRI: next_state = JALR;
-                    default: next_state = FETCH;
-                endcase
+            if (op == 7'b1110011) begin
+                next_state = EXCEPTION; // Transição para o estado EXCEPTION
+            end else begin
+            case (op)
+                LW: next_state = MEMADR;
+                SW: next_state = MEMADR;
+                RTYPE: next_state = EXECUTER;
+                ITYPE: next_state = EXECUTEI;
+                JAL_OP: next_state = JAL;
+                BRANCHI: next_state = BRANCH;
+                AUIPCI: next_state = AUIPC;
+                LUII: next_state = LUI;
+                JALRI: next_state = JALR;
+                default: next_state = FETCH;
+                    endcase
+                end
             end
             MEMADR: next_state = (op == LW) ? MEMREAD : MEMWR;
             MEMREAD: next_state = MEMWB;
@@ -154,21 +159,15 @@ module ControlUnit(
                 Imm = 1'b1;
             end
 
-            // JAL: begin
-            //     ALUSrcA = 3'b010; 
-            //     ALUSrcB = 3'b001; 
-            //     PCWrite = 1'b1;
-            //     PCSrc = 1'b1; 
-            // end
-            
+        
+                        
             JAL: begin
                 ALUSrcA = 3'b010; // old_pc
                 ALUSrcB = 3'b001; // 4
                 PCWrite = 1'b1;
                 PCSrc = 1'b1;
-                RegWrite = 1'b1; // ← ADICIONAR ESTA LINHA
-                ResultSrc = 3'b010; // ← PC + 4
             end
+
 
 
             BRANCH: begin
@@ -194,6 +193,9 @@ module ControlUnit(
             LUI: begin
                 ALUSrcA = 3'b011; 
                 ALUSrcB = 3'b010; 
+            end
+            EXCEPTION: begin
+                $finish;
             end
         endcase
     end

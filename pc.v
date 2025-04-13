@@ -4,7 +4,7 @@ module PC(
     output reg [31:0] current_pc 
 );
 
-    always @(posedge clk or negedge resetn) begin
+    always @(posedge clk) begin
     if (resetn == 1'b0) 
         current_pc = 32'h00000000;
     else if (enable_pc_update)

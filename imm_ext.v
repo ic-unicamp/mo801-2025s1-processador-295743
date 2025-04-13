@@ -2,9 +2,6 @@ module ImmExt (
     input [31:0] instruction,
     output reg [31:0] imm_ext
 );
-
-// trabalhar com [1:0] imm_src  se (00 I-Type) (01 == S-Type) (10 == B-Type) (11 == U-Type)
-
     localparam [6:0]
         LW_OP        = 7'b0000011,
         SW_OP        = 7'b0100011,
@@ -22,7 +19,6 @@ module ImmExt (
                 imm_ext = {{19{instruction[31]}}, instruction[31], instruction[7], instruction[30:25], instruction[11:8], 1'b0};
                 
             JAL_OP: // UJ type JAL
-                // imm_ext = {{11{instruction[31]}}, instruction[31], instruction[19:12], instruction[20], instruction[30:21], 1'b0};
                 // imm_ext = {{12{instruction[31]}}, instruction[19:12], instruction[20], instruction[30:21], 1'b0};
                 imm_ext = {{11{instruction[31]}}, instruction[31], instruction[19:12], instruction[20], instruction[30:21], 1'b0};
 
