@@ -1,1 +1,7 @@
-=== M[0x00000800] <- 0x00000007
+=== Time=11: address=00000000 pc:00000000  old_pc:00000000 ir:00000000 zero:0 
+=== Time=12: address=00000004 pc:00000004  old_pc:00000004 ir:40000093 zero:0 
+=== Time=20: address=00000008 pc:00000008  old_pc:00000008 ir:001080b3 zero:0 
+=== Time=28: address=0000000c pc:0000000c  old_pc:0000000c ir:00c0016f zero:0 
+=== Time=32: address=00000014 pc:00000014  old_pc:0000000c ir:00c0016f zero:0 
+Store: M[0x00000800] <- 0x00000010
+=== Time=36: address=00000018 pc:00000018  old_pc:00000018 ir:00100073 zero:0 
