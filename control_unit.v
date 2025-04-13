@@ -158,7 +158,10 @@ module ControlUnit(
                 ALUSrcA = 3'b010; 
                 ALUSrcB = 3'b001; 
                 PCWrite = 1'b1;
-                PCSrc = 1'b1;     
+                PCSrc = 1'b1; 
+
+                // RegWrite = 1'b1;
+                // ResultSrc = 3'b000;    
             end
             
             BRANCH: begin

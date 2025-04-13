@@ -1,0 +1,7 @@
+40000093 // addi x1, x0, 0x400
+001080b3 // add  x1, x1, x1 => x1 = 0x800
+00f00113 // addi x2, x0, 15
+03c00213 // addi x4, x0, 60
+004171b3 // and x3, x2, x4 => x3 = 15 & 60 = 12
+0030a023 // sw x3, 0(x1)
+7e50006f // j    0x0FFC // encerra a simulação
