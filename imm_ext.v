@@ -22,8 +22,10 @@ module ImmExt (
                 imm_ext = {{19{instruction[31]}}, instruction[31], instruction[7], instruction[30:25], instruction[11:8], 1'b0};
                 
             JAL_OP: // UJ type JAL
+                // imm_ext = {{11{instruction[31]}}, instruction[31], instruction[19:12], instruction[20], instruction[30:21], 1'b0};
+                // imm_ext = {{12{instruction[31]}}, instruction[19:12], instruction[20], instruction[30:21], 1'b0};
                 imm_ext = {{11{instruction[31]}}, instruction[31], instruction[19:12], instruction[20], instruction[30:21], 1'b0};
-            
+
             AUIPC_OP: // AUIPC U type
                 imm_ext = {instruction[31:12], 12'h000};
                 

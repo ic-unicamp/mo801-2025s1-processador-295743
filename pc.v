@@ -1,15 +1,15 @@
 module PC(
-    input clk, resetn, pc_load,
-    input [31:0] pc_in, 
-    output reg [31:0] pc_out 
+    input clk, resetn, enable_pc_update,
+    input [31:0] next_pc_value, 
+    output reg [31:0] current_pc 
 );
 
     always @(posedge clk or negedge resetn) begin
     if (resetn == 1'b0) 
-        pc_out = 32'h00000000;
-    else if (pc_load)
-        pc_out = pc_in;
-        // $display("pc out: %h <- pc in: %h", pc_out, pc_in);
+        current_pc = 32'h00000000;
+    else if (enable_pc_update)
+        current_pc = next_pc_value;
+        // $display("pc out: %h <- pc in: %h", current_pc, next_pc_value);
     end
 
 

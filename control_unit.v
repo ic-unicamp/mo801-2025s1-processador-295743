@@ -43,7 +43,7 @@ module ControlUnit(
         SW      = 7'b0100011,
         RTYPE   = 7'b0110011, // 0110011 
         ITYPE   = 7'b0010011,
-        JALI    = 7'b1101111,
+        JAL_OP  = 7'b1101111,
         BRANCHI = 7'b1100011,
         JALRI   = 7'b1100111,
         AUIPCI  = 7'b0010111, // 0010111
@@ -53,7 +53,7 @@ module ControlUnit(
     reg [3:0] state, next_state; 
 
     always @(posedge clk) begin
-        // $display("=== Time=%0t State=%b Opcode=%b PCWrite=%b PCSrc=%b", $time,  state, op,  PCWrite, PCSrc);
+        // $display("=== Time=%0t State=%b Opcode=%b PCWrite=%b PCSrc=%b MemWrite=%b", $time,  state, op,  PCWrite, PCSrc, MemWrite);
         if (resetn == 1'b0) 
             state = FETCH;
         else
@@ -69,7 +69,7 @@ module ControlUnit(
                     SW: next_state = MEMADR;
                     RTYPE: next_state = EXECUTER;
                     ITYPE: next_state = EXECUTEI;
-                    JALI: next_state = JAL;
+                    JAL_OP: next_state = JAL;
                     BRANCHI: next_state = BRANCH;
                     AUIPCI: next_state = AUIPC;
                     LUII: next_state = LUI;
@@ -154,16 +154,23 @@ module ControlUnit(
                 Imm = 1'b1;
             end
 
-            JAL: begin
-                ALUSrcA = 3'b010; 
-                ALUSrcB = 3'b001; 
-                PCWrite = 1'b1;
-                PCSrc = 1'b1; 
-
-                // RegWrite = 1'b1;
-                // ResultSrc = 3'b000;    
-            end
+            // JAL: begin
+            //     ALUSrcA = 3'b010; 
+            //     ALUSrcB = 3'b001; 
+            //     PCWrite = 1'b1;
+            //     PCSrc = 1'b1; 
+            // end
             
+            JAL: begin
+                ALUSrcA = 3'b010; // old_pc
+                ALUSrcB = 3'b001; // 4
+                PCWrite = 1'b1;
+                PCSrc = 1'b1;
+                RegWrite = 1'b1; // ← ADICIONAR ESTA LINHA
+                ResultSrc = 3'b010; // ← PC + 4
+            end
+
+
             BRANCH: begin
                 ALUSrcA = 3'b001; 
                 ALUOp = 2'b01;     
