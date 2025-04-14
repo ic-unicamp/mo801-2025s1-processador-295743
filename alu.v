@@ -22,7 +22,7 @@ module ALU(
         GEU  = 4'b1101,
         SLTU = 4'b1111;
 
-    assign zero = (result == 32'b0);
+    assign zero = (result == 0);
 
     always @(*) begin
         case (alu_control)
@@ -41,7 +41,7 @@ module ALU(
             NOR: result = ~(src_a | src_b);
             XOR: result = src_a ^ src_b;               // Bitwise XOR
 
-            BEQ:  result = (src_a == src_b) ? 32'h1 : 32'h0; // Equal
+            BEQ:  result = src_a - src_b;
             BGE: result = (src_a>=src_b) ? 32'h1 : 32'h0; // Greater or Equal
             GEU: result = ($unsigned(src_a)>=$unsigned(src_b)) ? 32'h1 : 32'h0; // Greater or Equal Unsigned
             
