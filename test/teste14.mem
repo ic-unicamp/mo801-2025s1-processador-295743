@@ -1,7 +1,8 @@
-40000093	//addi x1 x0 1024	addi x1, x0, 0x400
-001080b3	//add x1 x1 x1	add x1, x1, x1
-00200113	//addi x2 x0 2	addi x2, x0, 2
-00300213	//addi x4 x0 3	addi x4, x0, 3
-002211b3	//sll x3 x4 x2	sll x3, x4, x2
-0030a023	//sw x3 0(x1)	sw x3, 0(x1)
+// test sll
+40000093
+001080b3
+00500113
+00300213
+004111b3
+0030a023
 7e50006f	
