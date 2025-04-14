@@ -22,7 +22,7 @@ module ALU(
         GEU  = 4'b1101,
         SLTU = 4'b1111;
 
-    assign zero = (result == 0);
+    assign zero = ~(|result);
 
     always @(*) begin
         case (alu_control)

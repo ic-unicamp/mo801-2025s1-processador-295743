@@ -39,7 +39,7 @@ Mux MemDataMux(
   .option(reg_src),
   .A(alu_result),
   .B(mdr),
-  .C(0),
+  .C(alu_out), // PC+4 
   .D({16'h0000, alu_result[15:0]}),
   .E({24'h000000, alu_result[7:0]}),
   .F({{16{alu_result[15]}}, alu_result[15:0]}),
@@ -68,8 +68,6 @@ Mux AluBMux(
   .C(immediate),
   .S(alu_in_b)
 );
-
-// assign next_pc_value = (current_pc == 1'b1) ? alu_result : alu_out;
 
 assign next_pc_value = pc_src ? alu_result : alu_out;
 assign enable_pc_update = (zero & pc_src) | pc_write;
@@ -140,8 +138,10 @@ always @(posedge clk) begin
     old_pc = 32'h00000000;
   end else begin
     if (ir_write) begin
+
       old_pc = current_pc; // captura o valor correto do PC no ciclo de busca
       ir = data_in;
+      // $display("=== FETCH: PC=%h IR=%h", current_pc, data_in);
     end
     mdr = data_in;
     a_reg = reg_data1;

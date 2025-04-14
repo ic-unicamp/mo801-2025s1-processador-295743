@@ -89,7 +89,7 @@ module ControlUnit(
             EXECUTER: next_state = ALUWB;
             ALUWB: next_state = FETCH;
             EXECUTEI: next_state = ALUWB;
-            JAL: next_state = ALUWB;
+            JAL: next_state = FETCH; //mudanca
             BRANCH: next_state = FETCH;
             JALR: next_state = ALUWB;
             AUIPC: next_state = ALUWB;
@@ -166,6 +166,9 @@ module ControlUnit(
                 ALUSrcB = 3'b001; // 4
                 PCWrite = 1'b1;
                 PCSrc = 1'b1;
+                // mudanças para tenar resolver o problema do jal
+                RegWrite = 1'b1;
+                ResultSrc = 3'b010; // x1   
             end
 
 
