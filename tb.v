@@ -33,8 +33,12 @@ initial begin
   // $monitor("=== Time=%0t: address=%h pc:%h ir:%h imm:%h alu result:%h", $time, dut.address, dut.current_pc, dut.ir, dut.immediate, dut.alu_result);
   // $monitor("=== Time=%0t: address=%d pc:%d  old_pc:%d ir:%h ", $time, dut.address, dut.current_pc, dut.old_pc, dut.ir);
   // $monitor("=== x4 = %h", tb.dut.RegisterBank.registers[4]);
-  // $monitor("=== Time=%0t: pc=%h ir=%h x2:%h x4=%h alu_out=%h alu_result=%h pc_src=%h zero:%h", 
+  // $monitor("=== Time=%0t: pc=%d ir=%h x2:%h x4=%h alu_out=%h alu_result=%h pc_src=%h zero:%h", 
   // $time, dut.current_pc, dut.ir, dut.RegisterBank.registers[2], dut.RegisterBank.registers[4], dut.alu_out, dut.alu_result, dut.pc_src, dut.zero);
+  
+  // $monitor("=== Time=%0t: pc=%d ir=%h state:%b x2:%h", 
+  // $time, dut.current_pc, dut.ir, dut.ControlUnit.state,  dut.RegisterBank.registers[2]);
+  
   // $monitor("=== Time=%0t pc=%h ir=%h alu_src_b=%b immediate=%h alu_in_b=%h", 
   // $time, dut.current_pc, dut.ir, dut.alu_src_b, dut.immediate, dut.alu_in_b);
 

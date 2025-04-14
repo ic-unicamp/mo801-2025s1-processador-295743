@@ -1,7 +1,7 @@
-40000093   // addi x1, x0, 0x400      → x1 = 0x400
-001080b3   // add  x1, x1, x1         → x1 = x1 + x1 = 0x800
-0040016f   // jal  x2, 4              → x2 = PC+4 (0x10), PC ← PC + 4 = 0x10 (pula uma instrução)
-00900213   // addi x4, x0, 9          → x4 = 9   (deve ser PULADA pelo jal)
-00700213   // addi x4, x0, 7          → x4 = 7   (executada após o salto)
-0040a023   // sw   x4, 0(x1)          → M[x1] = x4 = 7
-00000073   // ecall                   → chamada de sistema (encerra)
+40000093 // addi 
+001080b3 // addi
+0080016f // jal
+00900213 // addi
+00700213 // addi
+0040a023 // sw
+00000073  // ebreak

@@ -160,12 +160,12 @@ module ControlUnit(
             end
 
         
-                        
+            // b1001
             JAL: begin
                 ALUSrcA = 3'b010; // old_pc
                 ALUSrcB = 3'b001; // 4
                 PCWrite = 1'b1;
-                PCSrc = 1'b1;
+                PCSrc = 1'b0;
                 // mudanças para tenar resolver o problema do jal
                 RegWrite = 1'b1;
                 ResultSrc = 3'b010; // x1   
