@@ -53,7 +53,7 @@ module ALUDecoder(
                     3'b010: alu_out = SLT;
                     3'b011: alu_out = SLTU; 
                     3'b100: alu_out = XOR;
-                    3'b101: alu_out = funct7[5] ? 4'b0011 : 4'b1001; // SRA/SRL
+                    3'b101: alu_out = (funct7[5]==1'b1) ? 4'b0011 : 4'b1001; // SRA/SRL
                     3'b110: alu_out = OR;
                     3'b111: alu_out = AND;
                     default: alu_out = ADD; // Default (ADD)

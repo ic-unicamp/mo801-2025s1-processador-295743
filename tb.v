@@ -36,7 +36,7 @@ initial begin
   // $monitor("=== Time=%0t: pc=%d ir=%h x2:%h x4=%h alu_out=%h alu_result=%h pc_src=%h zero:%h", 
   // $time, dut.current_pc, dut.ir, dut.RegisterBank.registers[2], dut.RegisterBank.registers[4], dut.alu_out, dut.alu_result, dut.pc_src, dut.zero);
   
-  // $monitor("=== Time=%0t: pc=%d ir=%h state:%b zero:%h branch_signal:%h enable_pc_update:%h", 
+  // $monitor("=== Time=%0t: fu", 
   // $time, dut.current_pc, dut.ir, dut.ControlUnit.state, dut.zero, dut.branch_signal, dut.enable_pc_update);
   
   // $monitor("=== Time=%0t pc=%h ir=%h alu_src_b=%b immediate=%h alu_in_b=%h", 
