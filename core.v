@@ -70,9 +70,9 @@ Mux AluBMux(
 );
 
 assign next_pc_value = pc_src ? alu_result : alu_out;
-assign enable_pc_update = (zero & pc_src) | pc_write;
 
-//JAL --> PC = ALUOut; ALUOut = PC+4
+assign enable_pc_update = ((branch_signal & zero) | pc_write);
+
 
 RegisterFile RegisterBank(
   .clk(clk),
@@ -139,8 +139,10 @@ always @(posedge clk) begin
   end else begin
     if (ir_write) begin
       old_pc = current_pc; // captura o valor correto do PC no ciclo de busca
+      
       ir = data_in;
-      // $display("=== FETCH: PC=%h IR=%h", current_pc, data_in);
+
+      // $display("=== FETCH: PC=%h IR=%h ir_write:%h", current_pc, data_in, ir);
     end
     mdr = data_in;
     a_reg = reg_data1;

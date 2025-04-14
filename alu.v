@@ -14,7 +14,7 @@ module ALU(
         SLT  = 4'b0111,
         NOR  = 4'b1100,
         XOR  = 4'b1010,
-        BEQ   = 4'b1110,
+        // BEQ   = 4'b1110,
         SLL  = 4'b1000,
         SRL  = 4'b1001,
         SRA  = 4'b0011,
@@ -41,7 +41,6 @@ module ALU(
             NOR: result = ~(src_a | src_b);
             XOR: result = src_a ^ src_b;               // Bitwise XOR
 
-            BEQ:  result = src_a - src_b;
             BGE: result = (src_a>=src_b) ? 32'h1 : 32'h0; // Greater or Equal
             GEU: result = ($unsigned(src_a)>=$unsigned(src_b)) ? 32'h1 : 32'h0; // Greater or Equal Unsigned
             
