@@ -17,10 +17,6 @@ wire [3:0] alu_control;
 wire [31:0] current_pc, next_pc_value, reg_in, alu_in_a, alu_in_b, alu_out, immediate;
 wire [31:0] reg_data1, reg_data2, rd;
 reg [31:0]  ir, mdr, alu_result, a_reg, b_reg, old_pc;
-// rs1 rs2 rd 
-
-// // sinais da alu
-// wire [31:0] alu_in_a, alu_in_b;
 
 assign data_out = b_reg;
 
@@ -52,7 +48,6 @@ Mux MemDataMux(
   .S(reg_in)
 );
 
-
 // mux para entrada a da alu
 Mux AluAMux(
   .option(alu_src_a),
@@ -74,9 +69,9 @@ Mux AluBMux(
   .S(alu_in_b)
 );
 
-assign next_pc_value = (current_pc == 1'b1) ? alu_result : alu_out;
+// assign next_pc_value = (current_pc == 1'b1) ? alu_result : alu_out;
 
-// assign next_pc_value = pc_src ? alu_result : alu_out;
+assign next_pc_value = pc_src ? alu_result : alu_out;
 assign enable_pc_update = (zero & pc_src) | pc_write;
 
 //JAL --> PC = ALUOut; ALUOut = PC+4

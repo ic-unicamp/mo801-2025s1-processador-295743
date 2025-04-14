@@ -31,8 +31,13 @@ initial begin
   resetn = 1'b0;
   #11 resetn = 1'b1;
   // $monitor("=== Time=%0t: address=%h pc:%h ir:%h imm:%h alu result:%h", $time, dut.address, dut.current_pc, dut.ir, dut.immediate, dut.alu_result);
-  // $monitor("=== Time=%0t: address=%h pc:%h  old_pc:%h ir:%h ", $time, dut.address, dut.current_pc, dut.old_pc, dut.ir);
-  
+  // $monitor("=== Time=%0t: address=%d pc:%d  old_pc:%d ir:%h ", $time, dut.address, dut.current_pc, dut.old_pc, dut.ir);
+  // $monitor("=== x4 = %h", tb.dut.RegisterBank.registers[4]);
+  // $monitor("=== Time=%0t: pc=%h ir=%h x2=%h x3=%h alu_out=%h alu_result=%h pc_src=%h", 
+  // $time, dut.current_pc, dut.ir, dut.RegisterBank.registers[2], dut.RegisterBank.registers[3], dut.alu_out, dut.alu_result, dut.pc_src);
+  // $monitor("=== Time=%0t pc=%h ir=%h alu_src_b=%b immediate=%h alu_in_b=%h", 
+  // $time, dut.current_pc, dut.ir, dut.alu_src_b, dut.immediate, dut.alu_in_b);
+
   $display("*** Starting simulation. ***");
   #4000 $finish;
 end

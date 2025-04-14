@@ -18,9 +18,15 @@ module ImmExt (
             BRANCH_OP: // SB type
                 imm_ext = {{19{instruction[31]}}, instruction[31], instruction[7], instruction[30:25], instruction[11:8], 1'b0};
                 
-            JAL_OP: // UJ type JAL
-                // imm_ext = {{12{instruction[31]}}, instruction[19:12], instruction[20], instruction[30:21], 1'b0};
-                imm_ext = {{11{instruction[31]}}, instruction[31], instruction[19:12], instruction[20], instruction[30:21], 1'b0};
+            JAL_OP: begin
+                imm_ext = {
+                    {12{instruction[31]}},        // sinal
+                    instruction[19:12],           // bits 19:12
+                    instruction[20],              // bit 11
+                    instruction[30:21],           // bits 10:1
+                    1'b0                          // alinhamento
+                };
+            end
 
             AUIPC_OP: // AUIPC U type
                 imm_ext = {instruction[31:12], 12'h000};
