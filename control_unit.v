@@ -167,25 +167,16 @@ module ControlUnit(
                 ALUSrcB = 3'b001; // 4
                 PCWrite = 1'b1;
                 PCSrc = 1'b0;
-                // mudanças para tenar resolver o problema do jal
                 RegWrite = 1'b1;
                 ResultSrc = 3'b010; // x1   
             end
 
-            // BRANCH: begin
-            //     ALUSrcA = 3'b001; 
-            //     ALUOp = 2'b01;    // sub 
-            //     Branch = 1'b1; ///
-            //     PCSrc = 1'b1;   
-                        // end
             BRANCH: begin
                 ALUSrcA = 3'b001;   // x2
                 ALUSrcB = 3'b000;   // x3
                 ALUOp   = 2'b01;    // operação de comparação
                 Branch  = 1'b1;     // ativa o branch
                 PCSrc   = 1'b1;     // seleciona ALUResult como próximo PC
-                // IRWrite = 1'b1;
-                // PCWrite deve depender de (Branch && zero) na lógica externa
             end
 
 
