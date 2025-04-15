@@ -16,8 +16,9 @@ module ImmExt (
     always @(*) begin
         case (instruction[6:0])
             BRANCH_OP: // SB type
-                imm_ext = {{19{instruction[31]}}, instruction[31], instruction[7], instruction[30:25], instruction[11:8], 1'b0};
-                
+                // imm_ext = {{19{instruction[31]}}, instruction[31], instruction[7], instruction[30:25], instruction[11:8], 1'b0};
+                imm_ext = {{20{instruction[31]}}, instruction[7], instruction[30:25], instruction[11:8], 1'b0};
+
             JAL_OP: begin
                 imm_ext = {
                     {12{instruction[31]}},        // sinal

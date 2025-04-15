@@ -139,9 +139,7 @@ always @(posedge clk) begin
   end else begin
     if (ir_write) begin
       old_pc = current_pc; // captura o valor correto do PC no ciclo de busca
-      
       ir = data_in;
-
       // $display("=== FETCH: PC=%h IR=%h ir_write:%h", current_pc, data_in, ir);
     end
     mdr = data_in;
